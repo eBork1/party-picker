@@ -1,26 +1,47 @@
 import React from 'react';
-import logo from './logo.svg';
+import 'bootstrap/dist/css/bootstrap.min.css';
 import './App.css';
+import {
+    BrowserRouter as Router,
+    Switch,
+    Route,
+} from "react-router-dom";
+import Header from './Header'
+import Check from './Check';
+import Logout from './Logout';
+import Picker from './Picker';
+import Connect from './Connect';
+import Playlist from './Playlist';
 
 function App() {
-  return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
-  );
+    return (
+        <div className="App">
+            <Header />
+            <Router>
+
+                <Switch>
+                    <Route exact path="/">
+                        <Check />
+                    </Route>
+                    <Route path="/connect">
+                        <Connect />
+                    </Route>
+                    <Route path="/picker">
+                        <Picker />
+                    </Route>
+                    <Route path="/playlist">
+                        <Playlist />
+                    </Route>
+                    
+                </Switch>
+
+            </Router>
+            {localStorage.getItem("user_token") ?
+                (<Logout />) :
+                ("")}
+
+        </div>
+    );
 }
 
 export default App;
