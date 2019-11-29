@@ -11,11 +11,13 @@ class Recommend extends React.Component {
             user_data: {}, 
             song_URIS: "",
             playlist_id: "",
+            playlist_link: "",
         }
         this.getToken = this.getToken.bind(this);
         this.getSongs = this.getSongs.bind(this);
         this.getUser = this.getUser.bind(this);
         this.createPlaylist = this.createPlaylist.bind(this);
+        this.addSongsToPlaylist = this.addSongsToPlaylist.bind(this);
     }
 
     // Got the authorization token from Spotify
@@ -80,7 +82,7 @@ class Recommend extends React.Component {
             .then(response => {
                 const data = (response.data)
                 this.setState({ user_data: data });
-                console.log("user ID: " + this.state.user_data)
+                //console.log(this.state.user_data.id)
             }).catch(response => {
                 console.log("failed on catch with error ", response);
             });
@@ -105,10 +107,37 @@ class Recommend extends React.Component {
             }
         })
         .then(response => {
-            console.log(response.data.id);
+            // console.log(response.data);
             const playlist_id = response.data.id;
+            const URL = response.data.external_urls.spotify;
             this.setState({ playlist_id: playlist_id});
-            console.log(this.state.playlist_id.id);
+            this.setState({ playlist_link: URL })
+            console.log(this.state.playlist_link);
+        }).catch(response => {
+                console.log("failed on catch with error ", response);
+            });
+        this.addSongsToPlaylist(token);
+    }
+
+    async addSongsToPlaylist(token) {
+        //const user_id = this.state.user_data.replace(/["]+/g, '');
+        const URL = 'https://api.spotify.com/v1/playlists/' + this.state.playlist_id + '/tracks';
+        console.log(URL);
+        // console.log(URL);
+        await axios({
+            method: 'post',
+            url: URL,
+            params : {
+                uris: this.state.song_URIS,
+            },
+            headers: {
+                Accept: 'application/json',
+                contentType: 'application/json',
+                Authorization: `Bearer ${token}`,
+            }
+        })
+        .then(response => {
+            console.log(response.data);
         }).catch(response => {
                 console.log("failed on catch with error ", response);
             });
@@ -121,15 +150,19 @@ class Recommend extends React.Component {
     render() {
         return (
             <div className="text-white">
-                <p>
-                    {Object.keys(this.state.song_data).length > 0 ?
-                        this.state.song_data.tracks[0].name
+                <div>
+                    {Object.keys(this.state.playlist_link) ?
+                        <h3>Check out your playlist here!
+                            <a href={this.state.playlist_link}> Go </a>
+                        </h3>
                         :
                         "loading data"}
-                </p>
+                </div>
             </div>
         )
     }
 }
 
 export default Recommend;
+
+

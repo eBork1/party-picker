@@ -12,10 +12,12 @@ import Logout from './Logout';
 import Picker from './Picker';
 import Connect from './Connect';
 import Playlist from './Playlist';
+import Navbar from './Navbar';
 
 function App() {
     return (
         <div className="App">
+        
             <Header />
             <Router>
 
@@ -39,7 +41,6 @@ function App() {
             {localStorage.getItem("user_token") ?
                 (<Logout />) :
                 ("")}
-
         </div>
     );
 }
